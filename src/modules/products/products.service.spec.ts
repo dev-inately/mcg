@@ -12,7 +12,7 @@ describe('ProductsService', () => {
   const mockProduct = {
     id: 1,
     name: 'Test Product',
-    price: 10000.00,
+    price: 10000.0,
     category_id: 1,
     category: {
       id: 1,
@@ -104,7 +104,9 @@ describe('ProductsService', () => {
 
   describe('findAllCategories', () => {
     it('should return all product categories with products', async () => {
-      jest.spyOn(productCategoryModel, 'findAll').mockResolvedValue([mockProductCategory]);
+      jest
+        .spyOn(productCategoryModel, 'findAll')
+        .mockResolvedValue([mockProductCategory]);
 
       const result = await service.findAllCategories();
 

@@ -1,20 +1,37 @@
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { AppModule } from './app.module';
+import helmet from 'helmet';
+import cors from 'cors';
 
 async function bootstrap() {
+  const logger = new Logger('Bootstrap');
+  
+  logger.log('Starting MyCoverGenius application...');
+  
   const app = await NestFactory.create(AppModule);
 
   // Enable validation pipes
-  app.useGlobalPipes(new ValidationPipe({
-    whitelist: true,
-    forbidNonWhitelisted: true,
-    transform: true,
-  }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
+
+  logger.log('Validation pipes configured');
 
   // Enable CORS
   app.enableCors();
+  // app.setGlobalPrefix('api');
+  app.use(helmet());
+  app.enableCors();
+  app.use(cors());
+
+  logger.log('Security middleware configured (CORS, Helmet)');
 
   // Swagger documentation setup
   const config = new DocumentBuilder()
@@ -30,9 +47,14 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
+  logger.log('Swagger documentation configured');
+
   const port = process.env.PORT || 3000;
   await app.listen(port);
-  console.log(`🚀 Application is running on: http://localhost:${port}`);
-  console.log(`📚 API Documentation available at: http://localhost:${port}/api`);
+  
+  logger.log(`🚀 Application is running on: http://localhost:${port}`);
+  logger.log(`📚 API Documentation available at: http://localhost:${port}/api`);
+  logger.log(`🔍 Logging level: ${process.env.LOG_LEVEL || 'info'}`);
+  logger.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
 }
 bootstrap();

@@ -10,7 +10,16 @@ import { Product } from '../../models/product.model';
 import { ProductCategory } from '../../models/product-category.model';
 
 @Module({
-  imports: [SequelizeModule.forFeature([Policy, PendingPolicy, Plan, User, Product, ProductCategory])],
+  imports: [
+    SequelizeModule.forFeature([
+      Policy,
+      PendingPolicy,
+      Plan,
+      User,
+      Product,
+      ProductCategory,
+    ]),
+  ],
   controllers: [PoliciesController],
   providers: [PoliciesService],
   exports: [PoliciesService],
