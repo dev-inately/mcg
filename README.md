@@ -20,6 +20,7 @@ A mini insuretech API built with NestJS, Sequelize-TypeScript, and PostgreSQL th
 - **Validation**: Class-validator with DTOs
 - **Documentation**: Swagger/OpenAPI
 - **Testing**: Jest for unit and integration tests
+- **Logging**: Pino with structured logging and performance monitoring
 
 ## 📋 Prerequisites
 
@@ -54,6 +55,9 @@ A mini insuretech API built with NestJS, Sequelize-TypeScript, and PostgreSQL th
    # Application Configuration
    PORT=3000
    NODE_ENV=development
+   
+   # Logging Configuration
+   LOG_LEVEL=info
    ```
 
 4. **Database Setup**
@@ -89,6 +93,41 @@ npm run test:cov
 
 # E2E tests
 npm run test:e2e
+```
+
+## 📝 Logging
+
+The application uses Pino for high-performance structured logging:
+
+### **Log Levels**
+- **ERROR**: Failed operations, exceptions, business rule violations
+- **WARN**: Business rule warnings, validation failures  
+- **INFO**: Successful operations, important business events
+- **DEBUG**: Detailed operation information, data mapping
+
+### **Logging Features**
+- **Performance Monitoring**: API response times, database operation durations
+- **Business Logic Tracking**: All insurance operations with detailed context
+- **Error Handling**: Comprehensive error logging with stack traces
+- **Request/Response Logging**: HTTP method, URL, status codes, duration
+- **Database Operations**: Connection, queries, transactions, seeding
+
+### **Configuration**
+```bash
+# Set log level (default: info)
+LOG_LEVEL=debug
+
+# Environment-based formatting
+NODE_ENV=development  # Pretty-printed, colored logs
+NODE_ENV=production   # JSON structured logs
+```
+
+### **Sample Log Output**
+```
+[INFO] GET /products - Fetching all products
+[INFO] Successfully fetched 4 products
+[DEBUG] Products data mapped successfully {"productCount":4,"categories":["Health","Auto"]}
+[INFO] GET /products - Successfully fetched all products {"productCount":4,"duration":"45ms"}
 ```
 
 ## 📚 API Documentation
