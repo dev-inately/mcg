@@ -27,7 +27,6 @@ async function bootstrap() {
   app.enableCors();
   app.setGlobalPrefix('api');
   app.use(helmet());
-  app.enableCors();
 
   logger.log('Security middleware configured (CORS, Helmet)');
   logger.log(

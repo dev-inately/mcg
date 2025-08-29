@@ -222,18 +222,6 @@ MyCoverGenius/
 - `npm run lint` - Run ESLint
 - `npm run lint:fix` - Fix ESLint issues
 
-## 🧪 Testing Strategy
-
-### Unit Tests
-- Test individual service methods
-- Mock external dependencies
-- Fast execution for development feedback
-
-### E2E Tests
-- Test complete API endpoints
-- Use PostgreSQL test database
-- Validate business logic and data flow
-- Test error scenarios and edge cases
 
 ## 🐛 Troubleshooting
 
@@ -251,48 +239,13 @@ MyCoverGenius/
 3. **Test Database Issues**
    - Ensure `mycovergenius-test` database exists
    - Check test environment variables
-   - Run tests with `--detectOpenHandles` flag if needed
 
 ### Debug Mode
 
 Enable debug logging by setting `NODE_ENV=development` and check the console for detailed logs.
 
 ## 📝 API Endpoints
-
-### Products
-- `GET /api/v1/products` - Get all products
-- `GET /api/v1/products/:id` - Get product by ID
-- `GET /api/v1/products/categories` - Get all product categories
-
-### Plans
-- `POST /api/v1/plans` - Create a new plan
-- `GET /api/v1/plans/:id` - Get plan by ID
-- `GET /api/v1/plans/user/:userId` - Get plans for a user
-
-### Policies
-- `GET /api/v1/policies` - Get policies with planId filter
-- `POST /api/v1/policies/activate` - Activate a pending policy
-
-### Pending Policies
-- `GET /api/v1/plans/:id/pending-policies` - Get pending policies for a plan
-- `GET /api/v1/plans/:id/pending-policies/unused` - Get unused pending policies
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests for new functionality
-5. Ensure all tests pass
-6. Submit a pull request
-
-## 📄 License
-
-This project is licensed under the MIT License.
-
-## 🆘 Support
-
-For support and questions:
 - Check the API documentation at `/docs`
-- Review the test files for usage examples
-- Check the console logs for debugging information
+
+## Improvement
+- I'll use Joi rather than class-validator for stronger input validation and sanitation
