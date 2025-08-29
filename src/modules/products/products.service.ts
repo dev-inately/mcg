@@ -40,10 +40,10 @@ export class ProductsService {
       this.logger.log(`Successfully fetched ${products.length} products`);
 
       return products;
-    } catch (error) {
+    } catch (error: unknown) {
       this.logger.error('Failed to fetch all products', {
-        error: error.message,
-        stack: error.stack,
+        error: (error as Error).message,
+        stack: (error as Error).stack,
       });
       throw error;
     }
@@ -64,10 +64,10 @@ export class ProductsService {
       );
 
       return categories;
-    } catch (error) {
+    } catch (error: unknown) {
       this.logger.error('Failed to fetch all product categories', {
-        error: error.message,
-        stack: error.stack,
+        error: (error as Error).message,
+        stack: (error as Error).stack,
       });
       throw error;
     }
@@ -102,11 +102,11 @@ export class ProductsService {
       );
 
       return product;
-    } catch (error) {
+    } catch (error: unknown) {
       this.logger.error(`Failed to fetch product with ID ${id}`, {
         productId: id,
-        error: error.message,
-        stack: error.stack,
+        error: (error as Error).message,
+        stack: (error as Error).stack,
       });
       throw error;
     }

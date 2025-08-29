@@ -17,7 +17,7 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 import { PoliciesService } from './policies.service';
-import { PolicyResponseDto, PolicyFilterDto } from '../../dto/policy.dto';
+import { PolicyResponseDto } from '../../dto/policy.dto';
 import { ActivatePendingPolicyDto } from '../../dto/pending-policy.dto';
 import {
   ResponseHelper,

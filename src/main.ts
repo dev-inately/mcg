@@ -5,7 +5,6 @@ import { Logger } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { RequestLoggingInterceptor } from './common/interceptors';
 import helmet from 'helmet';
-import cors from 'cors';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
@@ -29,7 +28,6 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   app.use(helmet());
   app.enableCors();
-  app.use(cors());
 
   logger.log('Security middleware configured (CORS, Helmet)');
   logger.log(
@@ -62,4 +60,7 @@ async function bootstrap() {
     `📚 API Documentation available at: http://localhost:${port}/docs`,
   );
 }
-bootstrap();
+bootstrap().catch((error) => {
+  console.error('Failed to start application:', error);
+  process.exit(1);
+});

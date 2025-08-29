@@ -83,11 +83,11 @@ export class PendingPoliciesService {
       }));
 
       return result;
-    } catch (error) {
+    } catch (error: unknown) {
       this.logger.error(`Failed to fetch pending policies for plan ${planId}`, {
         planId,
-        error: error.message,
-        stack: error.stack,
+        error: (error as Error).message,
+        stack: (error as Error).stack,
       });
       throw error;
     }
@@ -161,8 +161,8 @@ export class PendingPoliciesService {
         `Failed to fetch unused pending policies for plan ${planId}`,
         {
           planId,
-          error: error.message,
-          stack: error.stack,
+          error: (error as Error).message,
+          stack: (error as Error).stack,
         },
       );
       throw error;

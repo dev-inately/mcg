@@ -27,7 +27,7 @@ export class ProductsController {
   }
 
   @Get('categories')
-  @ApiOperation({ summary: 'Get all product categories with their products' })
+  @ApiOperation({ summary: 'Get all product categories' })
   @ApiResponse({
     status: 200,
     description: 'List of all product categories',

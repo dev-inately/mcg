@@ -126,7 +126,7 @@ export class PoliciesService {
           const policy = await this.policyModel.create(
             {
               policyTypeId: pendingPolicy.plan.productId,
-              userId: pendingPolicy.plan.userId,
+              userId: userId || pendingPolicy.plan.userId,
               planId: pendingPolicy.plan.id,
               policyNumber,
             },
@@ -134,10 +134,8 @@ export class PoliciesService {
           );
 
           // Mark pending policy as used and soft delete it
-          await pendingPolicy.update(
-            { status: 'used', deletedAt: new Date() },
-            { transaction },
-          );
+          await pendingPolicy.update({ status: 'used' }, { transaction });
+          await pendingPolicy.destroy({ transaction });
 
           return policy;
         },
@@ -164,11 +162,11 @@ export class PoliciesService {
           category: pick(pendingPolicy.plan.product.category, ['name']),
         },
       };
-    } catch (error) {
+    } catch (error: unknown) {
       this.logger.error('Failed to activate pending policy', {
         activateDto,
-        error: error.message,
-        stack: error.stack,
+        error: (error as Error).message,
+        stack: (error as Error).stack,
       });
       throw error;
     }
@@ -178,7 +176,7 @@ export class PoliciesService {
     this.logger.log('Fetching all activated policies', { filters });
 
     try {
-      const whereClause: any = {};
+      const whereClause: { planId?: number } = {};
 
       if (filters?.planId !== undefined) {
         whereClause.planId = filters.planId;
@@ -239,8 +237,8 @@ export class PoliciesService {
     } catch (error) {
       this.logger.error('Failed to fetch all policies', {
         filters,
-        error: error.message,
-        stack: error.stack,
+        error: (error as Error).message,
+        stack: (error as Error).stack,
       });
       throw error;
     }
@@ -303,8 +301,8 @@ export class PoliciesService {
     } catch (error) {
       this.logger.error(`Failed to fetch policy with ID ${id}`, {
         policyId: id,
-        error: error.message,
-        stack: error.stack,
+        error: (error as Error).message,
+        stack: (error as Error).stack,
       });
       throw error;
     }

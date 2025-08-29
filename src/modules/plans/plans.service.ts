@@ -23,8 +23,6 @@ export class PlansService {
     private readonly userModel: typeof User,
     @InjectModel(Product)
     private readonly productModel: typeof Product,
-    @InjectModel(ProductCategory)
-    private readonly productCategoryModel: typeof ProductCategory,
     @InjectModel(PendingPolicy)
     private readonly pendingPolicyModel: typeof PendingPolicy,
     @InjectModel(TRX)
@@ -156,17 +154,31 @@ export class PlansService {
         totalAmount: result.plan.totalAmount,
         transactionId: result.trx.id,
       });
-
-      return {
-        ...result.plan.dataValues,
-        user: user.dataValues,
-        product: product.dataValues,
+      const resp: PlanResponseDto = {
+        id: result.plan.id,
+        userId: result.plan.userId,
+        productId: result.plan.productId,
+        quantity: result.plan.quantity,
+        totalAmount: result.plan.totalAmount,
+        user: user.dataValues as { id: number; fullName: string },
+        product: product.dataValues as {
+          id: number;
+          name: string;
+          price: number;
+          category: { id: number; name: string };
+        },
+        createdAt: result.plan.createdAt,
+        updatedAt: result.plan.updatedAt,
+        // user: user.dataValues,
+        // product: product.dataValues,
+        // ...result.plan.dataValues,
       };
-    } catch (error) {
+      return resp;
+    } catch (error: unknown) {
       this.logger.error('Failed to create plan', {
         createPlanDto,
-        error: error.message,
-        stack: error.stack,
+        error: (error as Error).message,
+        stack: (error as Error).stack,
       });
       throw error;
     }
@@ -210,11 +222,11 @@ export class PlansService {
       );
 
       return plan;
-    } catch (error) {
+    } catch (error: unknown) {
       this.logger.error(`Failed to fetch plan with ID ${id}`, {
         planId: id,
-        error: error.message,
-        stack: error.stack,
+        error: (error as Error).message,
+        stack: (error as Error).stack,
       });
       throw error;
     }
@@ -264,11 +276,11 @@ export class PlansService {
       );
 
       return plans;
-    } catch (error) {
+    } catch (error: unknown) {
       this.logger.error(`Failed to fetch plans for user ${userId}`, {
         userId,
-        error: error.message,
-        stack: error.stack,
+        error: (error as Error).message,
+        stack: (error as Error).stack,
       });
       throw error;
     }
