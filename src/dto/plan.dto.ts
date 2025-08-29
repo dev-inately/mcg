@@ -1,4 +1,4 @@
-import { IsNumber, IsOptional } from 'class-validator';
+import { IsNumber, IsOptional, Min } from 'class-validator';
 
 export class CreatePlanDto {
   @IsNumber()
@@ -8,6 +8,7 @@ export class CreatePlanDto {
   productId: number;
 
   @IsNumber()
+  @Min(1)
   @IsOptional()
   quantity: number = 1;
 }

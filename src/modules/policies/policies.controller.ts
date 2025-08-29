@@ -70,9 +70,11 @@ export class PoliciesController {
     description: 'List of activated policies',
   })
   async findAll(
-    @Query('planId', ParseIntPipe) planId: number,
+    @Query('planId', new ParseIntPipe({ optional: true })) planId?: number,
   ): Promise<CustomApiResponse<PolicyResponseDto[]>> {
-    const policies = await this.policiesService.findAll({ planId });
+    const policies = await this.policiesService.findAll(
+      planId ? { planId } : undefined,
+    );
     return ResponseHelper.success(
       policies,
       'Insurance policies retrieved successfully',
