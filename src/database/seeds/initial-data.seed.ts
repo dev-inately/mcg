@@ -113,7 +113,7 @@ export async function seedInitialData(sequelize: Sequelize) {
     logger.log('Creating sample users...');
 
     // Use transaction to create user and their wallet
-    const userCreation = await sequelize.transaction(async (transaction) => {
+    await sequelize.transaction(async (transaction) => {
       const users = await User.bulkCreate(
         [
           {
@@ -144,6 +144,7 @@ export async function seedInitialData(sequelize: Sequelize) {
         { transaction },
       );
       logger.log(
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         `Users created successfully. \n ${users.map(
           (user) =>
             `User: ${user.fullName} - ${user.email} - ${user.phoneNumber}`,
@@ -194,8 +195,8 @@ export async function seedInitialData(sequelize: Sequelize) {
     // });
   } catch (error) {
     logger.error('Error seeding initial data', {
-      error: error.message,
-      stack: error.stack,
+      error: (error as Error).message,
+      stack: (error as Error).stack,
     });
     throw error;
   }

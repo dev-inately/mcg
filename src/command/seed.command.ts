@@ -35,7 +35,7 @@ export class SeedCommand extends CommandRunner {
 
   async run(
     passedParams: string[],
-    options?: Record<string, any>,
+    options?: Record<string, string>,
   ): Promise<void> {
     const forceReseed = options?.force || false;
 
@@ -75,8 +75,6 @@ export class SeedCommand extends CommandRunner {
       this.logger.log('Database models synchronized');
 
       const existingCategories = await ProductCategory.count();
-      const existingUsers = await User.count();
-      const existingProducts = await Product.count();
 
       if (existingCategories > 0 && !forceReseed) {
         this.logger.log(

@@ -202,7 +202,7 @@ describe('Products E2E', () => {
     });
 
     it('should include complete category information', async () => {
-      const premiumHealthPlan = testData.products.find(
+      const premiumHealthPlan = testData?.products?.find(
         (p: any) => p.name === 'Premium Health Plan',
       );
 
@@ -261,6 +261,7 @@ describe('Products E2E', () => {
         .expect(200);
 
       const category = categoriesResponse.body.data[0];
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       const productWithSameCategory = productsResponse.body.data.find(
         (p: any) => p.category.id === category.id,
       );

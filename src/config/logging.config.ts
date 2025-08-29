@@ -1,4 +1,5 @@
 import { registerAs } from '@nestjs/config';
+import { Request, Response } from 'express';
 
 export default registerAs('logging', () => ({
   level: process.env.LOG_LEVEL || 'info',
@@ -11,25 +12,26 @@ export default registerAs('logging', () => ({
     },
   },
   serializers: {
-    req: (req: any) => {
+    req: (req: Request) => {
       return {
         method: req.method,
         url: req.url,
-        body: req.body,
+        body: req.body as Record<string, unknown>,
         query: req.query,
         params: req.params,
         ip: req.ip,
       };
     },
-    res: (res: any) => ({
+    res: (res: Response) => ({
       statusCode: res.statusCode,
     }),
-    err: (err: any) => ({
-      type: err.type,
+    err: (err: Error) => ({
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      type: err.type || undefined,
+      code: err?.code,
+      statusCode: err?.statusCode,
       message: err.message,
       stack: err.stack,
-      code: err.code,
-      statusCode: err.statusCode,
     }),
   },
 }));

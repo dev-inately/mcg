@@ -31,7 +31,8 @@ export class RequestLoggingInterceptor implements NestInterceptor {
 
     return next.handle().pipe(
       tap({
-        next: (data) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        next: (_data) => {
           const duration = Date.now() - startTime;
           const statusCode = response.statusCode;
 
@@ -71,8 +72,8 @@ export class RequestLoggingInterceptor implements NestInterceptor {
             url,
             statusCode,
             duration: `${duration}ms`,
-            error: error.message,
-            stack: error.stack,
+            error: (error as Error).message,
+            stack: (error as Error).stack,
             ip,
             userAgent,
             timestamp: new Date().toISOString(),

@@ -5,7 +5,6 @@ import {
   DataType,
   HasMany,
   HasOne,
-  BelongsTo,
   UpdatedAt,
   CreatedAt,
 } from 'sequelize-typescript';
