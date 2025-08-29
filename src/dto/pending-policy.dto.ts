@@ -1,4 +1,4 @@
-import { IsString, IsNumber, IsOptional, IsEnum } from 'class-validator';
+import { IsNumber, IsOptional } from 'class-validator';
 
 export class PendingPolicyResponseDto {
   id: number;
