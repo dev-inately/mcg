@@ -16,7 +16,11 @@ describe('AppController', () => {
 
   describe('root', () => {
     it('should return "Welcome to our insuretech API!"', () => {
-      expect(appController.getHello()).toBe('Welcome to our insuretech API!');
+      const result = appController.getHello();
+      expect(result).toEqual({
+        data: 'Welcome to our insuretech API!',
+        message: 'Welcome message retrieved successfully',
+      });
     });
   });
 });
