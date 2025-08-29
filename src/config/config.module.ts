@@ -8,8 +8,12 @@ import loggingConfig from './logging.config';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath:
+        process.env.NODE_ENV === 'test'
+          ? ['.env.test', '.env.local', '.env']
+          : ['.env.local', '.env'],
       load: [databaseConfig, appConfig, loggingConfig],
-      envFilePath: '.env',
+      cache: true,
     }),
   ],
 })

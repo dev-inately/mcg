@@ -38,6 +38,9 @@ lerna-debug.log*
 .env
 .env.test
 .env.production
+.env.local
+.env.test
+.e
 
 # temp
 .tmp
@@ -49,3 +52,7 @@ lerna-debug.log*
 
 # Build
 /build
+checklist.md
+Task.md
+.claude
+.cursor

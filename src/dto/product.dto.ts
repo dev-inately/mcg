@@ -1,42 +1,28 @@
-import { IsString, IsNumber, IsOptional, IsEnum } from 'class-validator';
+import { IsString, IsNumber, MinLength } from 'class-validator';
 
 export class CreateProductDto {
   @IsString()
+  @MinLength(3)
   name: string;
 
   @IsNumber()
   price: number;
 
   @IsNumber()
-  category_id: number;
-}
-
-export class UpdateProductDto {
-  @IsOptional()
-  @IsString()
-  name?: string;
-
-  @IsOptional()
-  @IsNumber()
-  price?: number;
-
-  @IsOptional()
-  @IsNumber()
-  category_id?: number;
+  categoryId: number;
 }
 
 export class ProductResponseDto {
   id: number;
   name: string;
   price: number;
-  category_id: number;
   category: {
     id: number;
     name: string;
     description: string;
   };
-  created_at: Date;
-  updated_at: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export class ProductCategoryResponseDto {
@@ -44,6 +30,6 @@ export class ProductCategoryResponseDto {
   name: string;
   description: string;
   products: ProductResponseDto[];
-  created_at: Date;
-  updated_at: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }

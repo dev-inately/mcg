@@ -1,27 +1,26 @@
-import { IsString, IsNumber, IsOptional, Min } from 'class-validator';
+import { IsNumber, IsOptional } from 'class-validator';
 
 export class CreatePlanDto {
   @IsNumber()
-  user_id: number;
+  userId: number;
 
   @IsNumber()
-  product_id: number;
+  productId: number;
 
   @IsNumber()
-  @Min(1)
-  quantity: number;
+  @IsOptional()
+  quantity: number = 1;
 }
 
 export class PlanResponseDto {
   id: number;
-  user_id: number;
-  product_id: number;
+  userId: number;
+  productId: number;
   quantity: number;
-  total_amount: number;
+  totalAmount: number;
   user: {
     id: number;
-    name: string;
-    wallet_balance: number;
+    fullName: string;
   };
   product: {
     id: number;
@@ -32,6 +31,6 @@ export class PlanResponseDto {
       name: string;
     };
   };
-  created_at: Date;
-  updated_at: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }

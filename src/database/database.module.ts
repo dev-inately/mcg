@@ -1,13 +1,17 @@
 import { Module, Logger } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { User } from '../models/user.model';
-import { ProductCategory } from '../models/product-category.model';
-import { Product } from '../models/product.model';
-import { Plan } from '../models/plan.model';
-import { PendingPolicy } from '../models/pending-policy.model';
-import { Policy } from '../models/policy.model';
-import { SeederService } from './seeder.service';
+import { Dialect } from 'sequelize';
+import {
+  Transaction,
+  Wallet,
+  Policy,
+  PendingPolicy,
+  Plan,
+  ProductCategory,
+  Product,
+  User,
+} from '../models';
 
 @Module({
   imports: [
@@ -15,21 +19,36 @@ import { SeederService } from './seeder.service';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
         const logger = new Logger('DatabaseModule');
-        
+
         const config = {
-          dialect: configService.get('database.dialect'),
-          host: configService.get('database.host'),
-          port: configService.get('database.port'),
-          username: configService.get('database.username'),
-          password: configService.get('database.password'),
-          database: configService.get('database.database'),
-          autoLoadModels: configService.get('database.autoLoadModels'),
-          synchronize: configService.get('database.synchronize'),
-          logging: configService.get('database.logging'),
-          models: [User, ProductCategory, Product, Plan, PendingPolicy, Policy],
+          dialect: ((configService.get('DB_DIALECT') as string) ||
+            'postgres') as Dialect,
+          autoLoadModels: true,
+          synchronize: configService.get('NODE_ENV') === 'development',
+          logging: configService.get('NODE_ENV') === 'development',
+          port: parseInt(
+            (configService.get('DB_PORT') as string) || '5432',
+            10,
+          ),
+          host: (configService.get('DB_HOST') as string) || 'localhost',
+          username: configService.get('DB_USERNAME') as string,
+          password: configService.get('DB_PASSWORD') as string,
+          database: configService.get('DB_NAME') as string,
+          models: [
+            User,
+            ProductCategory,
+            Product,
+            Plan,
+            PendingPolicy,
+            Policy,
+            Wallet,
+            Transaction,
+          ],
         };
 
-        logger.log('Database configuration loaded', {
+        // Always set PostgreSQL configuration (for both development and testing)
+
+        logger.log('PostgreSQL development database configuration loaded', {
           host: config.host,
           port: config.port,
           database: config.database,
@@ -44,6 +63,5 @@ import { SeederService } from './seeder.service';
       inject: [ConfigService],
     }),
   ],
-  providers: [SeederService],
 })
 export class DatabaseModule {}

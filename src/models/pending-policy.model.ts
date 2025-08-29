@@ -4,26 +4,19 @@ import {
   Model,
   DataType,
   BelongsTo,
-  HasOne,
   ForeignKey,
-  CreatedAt,
   UpdatedAt,
+  CreatedAt,
   DeletedAt,
 } from 'sequelize-typescript';
 import { Plan } from './plan.model';
-import { Policy } from './policy.model';
 
 @Table({
   tableName: 'pending_policies',
   timestamps: true,
-  paranoid: true, // Enables soft delete
+  paranoid: true,
 })
 export class PendingPolicy extends Model {
-  @Column({
-    type: DataType.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
-  })
   declare id: number;
 
   @ForeignKey(() => Plan)
@@ -31,7 +24,7 @@ export class PendingPolicy extends Model {
     type: DataType.INTEGER,
     allowNull: false,
   })
-  plan_id: number;
+  planId: number;
 
   @Column({
     type: DataType.ENUM('unused', 'used'),
@@ -40,19 +33,16 @@ export class PendingPolicy extends Model {
   })
   status: 'unused' | 'used';
 
-  @CreatedAt
-  created_at: Date;
-
-  @UpdatedAt
-  updated_at: Date;
-
-  @DeletedAt
-  deleted_at: Date;
-
   // Associations
   @BelongsTo(() => Plan)
   plan: Plan;
 
-  @HasOne(() => Policy)
-  policy: Policy;
+  @CreatedAt
+  declare createdAt: Date;
+
+  @UpdatedAt
+  declare updatedAt: Date;
+
+  @DeletedAt
+  deletedAt: Date;
 }

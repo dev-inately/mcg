@@ -1,119 +1,197 @@
 import { Logger } from '@nestjs/common';
+import { Sequelize } from 'sequelize-typescript';
+import { User } from '../../models/user.model';
 import { ProductCategory } from '../../models/product-category.model';
 import { Product } from '../../models/product.model';
-import { User } from '../../models/user.model';
+import { Wallet } from '../../models/wallet.model';
 
 const logger = new Logger('InitialDataSeed');
 
-export async function seedInitialData() {
-  logger.log('Starting initial data seeding...');
-  
+export async function seedInitialData(sequelize: Sequelize) {
   try {
+    logger.log('Starting initial data seeding...');
+
     // Create Product Categories
     logger.log('Creating product categories...');
-    const healthCategory = await ProductCategory.create({
-      name: 'Health',
-      description: 'Health insurance products',
-    });
-    logger.log('Health category created', { categoryId: healthCategory.id, name: healthCategory.name });
 
-    const autoCategory = await ProductCategory.create({
-      name: 'Auto',
-      description: 'Auto insurance products',
+    const productsCategories = await ProductCategory.bulkCreate([
+      {
+        name: 'Health Insurance',
+        description: 'Comprehensive health insurance products',
+      },
+      {
+        name: 'Auto Insurance',
+        description: 'Automotive insurance products',
+      },
+    ]);
+    logger.log('Product categories created', {
+      productsCategories: productsCategories.map((pc) => pc.name),
     });
-    logger.log('Auto category created', { categoryId: autoCategory.id, name: autoCategory.name });
 
     // Create Products
     logger.log('Creating insurance products...');
-    
-    const optimalCareMini = await Product.create({
-      name: 'Optimal Care Mini',
-      price: 10000.0,
-      category_id: healthCategory.id,
-    });
-    logger.log('Optimal Care Mini product created', { 
-      productId: optimalCareMini.id, 
-      name: optimalCareMini.name, 
-      price: optimalCareMini.price,
-      categoryId: optimalCareMini.category_id
+
+    const products = await Product.bulkCreate([
+      {
+        name: 'Optimal Care Mini',
+        price: 10000.0,
+        categoryId: productsCategories[0].id,
+      },
+      {
+        name: 'Optimal Care Standard',
+        price: 20000.0,
+        categoryId: productsCategories[0].id,
+      },
+
+      {
+        name: 'Third-Party',
+        price: 5000.0,
+        categoryId: productsCategories[1].id,
+      },
+
+      {
+        name: 'Comprehensive',
+        price: 15000.0,
+        categoryId: productsCategories[1].id,
+      },
+    ]);
+
+    logger.log('Products created', {
+      products: products.map((p) => p.name),
     });
 
-    const optimalCareStandard = await Product.create({
-      name: 'Optimal Care Standard',
-      price: 20000.0,
-      category_id: healthCategory.id,
-    });
-    logger.log('Optimal Care Standard product created', { 
-      productId: optimalCareStandard.id, 
-      name: optimalCareStandard.name, 
-      price: optimalCareStandard.price,
-      categoryId: optimalCareStandard.category_id
-    });
+    // const optimalCareMini = await Product.create({
+    //   name: 'Optimal Care Mini',
+    //   price: 10000.0,
+    //   categoryId: healthCategory.id,
+    // });
+    // logger.log('Optimal Care Mini product created', {
+    //   productId: optimalCareMini.id,
+    //   name: optimalCareMini.name,
+    //   price: optimalCareMini.price,
+    //   categoryId: optimalCareMini.categoryId,
+    // });
 
-    const thirdParty = await Product.create({
-      name: 'Third-Party',
-      price: 5000.0,
-      category_id: autoCategory.id,
-    });
-    logger.log('Third-Party product created', { 
-      productId: thirdParty.id, 
-      name: thirdParty.name, 
-      price: thirdParty.price,
-      categoryId: thirdParty.category_id
-    });
+    // const optimalCareStandard = await Product.create({
+    //   name: 'Optimal Care Standard',
+    //   price: 20000.0,
+    //   categoryId: healthCategory.id,
+    // });
+    // logger.log('Optimal Care Standard product created', {
+    //   productId: optimalCareStandard.id,
+    //   name: optimalCareStandard.name,
+    //   price: optimalCareStandard.price,
+    //   categoryId: optimalCareStandard.categoryId,
+    // });
 
-    const comprehensive = await Product.create({
-      name: 'Comprehensive',
-      price: 15000.0,
-      category_id: autoCategory.id,
-    });
-    logger.log('Comprehensive product created', { 
-      productId: comprehensive.id, 
-      name: comprehensive.name, 
-      price: comprehensive.price,
-      categoryId: comprehensive.category_id
-    });
+    // const thirdParty = await Product.create({
+    //   name: 'Third-Party',
+    //   price: 5000.0,
+    //   categoryId: autoCategory.id,
+    // });
+    // logger.log('Third-Party product created', {
+    //   productId: thirdParty.id,
+    //   name: thirdParty.name,
+    //   price: thirdParty.price,
+    //   categoryId: thirdParty.categoryId,
+    // });
+
+    // const comprehensive = await Product.create({
+    //   name: 'Comprehensive',
+    //   price: 15000.0,
+    //   categoryId: autoCategory.id,
+    // });
+    // logger.log('Comprehensive product created', {
+    //   productId: comprehensive.id,
+    //   name: comprehensive.name,
+    //   price: comprehensive.price,
+    //   categoryId: comprehensive.categoryId,
+    // });
 
     // Create Sample Users
+
     logger.log('Creating sample users...');
-    
-    const johnDoe = await User.create({
-      name: 'John Doe',
-      wallet_balance: 100000.0,
-    });
-    logger.log('John Doe user created', { 
-      userId: johnDoe.id, 
-      name: johnDoe.name, 
-      walletBalance: johnDoe.wallet_balance
+
+    // Use transaction to create user and their wallet
+    const userCreation = await sequelize.transaction(async (transaction) => {
+      const users = await User.bulkCreate(
+        [
+          {
+            fullName: 'John Doe',
+            email: 'john.doe@example.com',
+            phoneNumber: '+1234567890',
+          },
+          {
+            fullName: 'Jane Smith',
+            email: 'jane.smith@example.com',
+            phoneNumber: '+1234567891',
+          },
+        ],
+        { transaction },
+      );
+
+      await Wallet.bulkCreate(
+        [
+          {
+            userId: users[0].id,
+            walletBalance: 50000.0,
+          },
+          {
+            userId: users[1].id,
+            walletBalance: 75000.0,
+          },
+        ],
+        { transaction },
+      );
+      logger.log(
+        `Users created successfully. \n ${users.map(
+          (user) =>
+            `User: ${user.fullName} - ${user.email} - ${user.phoneNumber}`,
+        )}`,
+      );
+      return users;
     });
 
-    const janeSmith = await User.create({
-      name: 'Jane Smith',
-      wallet_balance: 75000.0,
-    });
-    logger.log('Jane Smith user created', { 
-      userId: janeSmith.id, 
-      name: janeSmith.name, 
-      walletBalance: janeSmith.wallet_balance
-    });
+    // const bobJohnson = await User.create({
+    //   fullName: 'Bob Johnson',
+    //   email: 'bob.johnson@example.com',
+    //   phoneNumber: '+1234567892',
+    // });
+    // logger.log('Bob Johnson user created', {
+    //   userId: bobJohnson.id,
+    //   fullName: bobJohnson.fullName,
+    //   email: bobJohnson.email,
+    // });
 
-    const bobJohnson = await User.create({
-      name: 'Bob Johnson',
-      wallet_balance: 50000.0,
-    });
-    logger.log('Bob Johnson user created', { 
-      userId: bobJohnson.id, 
-      name: bobJohnson.name, 
-      walletBalance: bobJohnson.wallet_balance
-    });
+    // // Create Wallets for Users
+    // logger.log('Creating wallets for users...');
 
-    logger.log('Initial data seeding completed successfully', {
-      categoriesCreated: 2,
-      productsCreated: 4,
-      usersCreated: 3,
-      totalProductValue: 50000.0,
-      totalUserWalletBalance: 225000.0
-    });
+    // await Wallet.create({
+    //   userId: johnDoe.id,
+    //   walletBalance: 100000.0,
+    // });
+    // logger.log('John Doe wallet created', {
+    //   userId: johnDoe.id,
+    //   walletBalance: 100000.0,
+    // });
+
+    // await Wallet.create({
+    //   userId: janeSmith.id,
+    //   walletBalance: 75000.0,
+    // });
+    // logger.log('Jane Smith wallet created', {
+    //   userId: janeSmith.id,
+    //   walletBalance: 75000.0,
+    // });
+
+    // await Wallet.create({
+    //   userId: bobJohnson.id,
+    //   walletBalance: 50000.0,
+    // });
+    // logger.log('Bob Johnson wallet created', {
+    //   userId: bobJohnson.id,
+    //   walletBalance: 50000.0,
+    // });
   } catch (error) {
     logger.error('Error seeding initial data', {
       error: error.message,

@@ -18,11 +18,6 @@ import { PendingPolicy } from './pending-policy.model';
   timestamps: true,
 })
 export class Plan extends Model {
-  @Column({
-    type: DataType.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
-  })
   declare id: number;
 
   @ForeignKey(() => User)
@@ -30,14 +25,14 @@ export class Plan extends Model {
     type: DataType.INTEGER,
     allowNull: false,
   })
-  user_id: number;
+  userId: number;
 
   @ForeignKey(() => Product)
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
   })
-  product_id: number;
+  productId: number;
 
   @Column({
     type: DataType.INTEGER,
@@ -50,15 +45,8 @@ export class Plan extends Model {
     type: DataType.DECIMAL(10, 2),
     allowNull: false,
   })
-  total_amount: number;
+  totalAmount: number;
 
-  @CreatedAt
-  created_at: Date;
-
-  @UpdatedAt
-  updated_at: Date;
-
-  // Associations
   @BelongsTo(() => User)
   user: User;
 
@@ -66,5 +54,11 @@ export class Plan extends Model {
   product: Product;
 
   @HasMany(() => PendingPolicy)
-  pending_policies: PendingPolicy[];
+  pendingPolicies: PendingPolicy[];
+
+  @CreatedAt
+  declare createdAt: Date;
+
+  @UpdatedAt
+  declare updatedAt: Date;
 }

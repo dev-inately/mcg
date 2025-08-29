@@ -11,17 +11,13 @@ import {
 } from 'sequelize-typescript';
 import { ProductCategory } from './product-category.model';
 import { Plan } from './plan.model';
+import { Policy } from './policy.model';
 
 @Table({
   tableName: 'products',
   timestamps: true,
 })
 export class Product extends Model {
-  @Column({
-    type: DataType.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
-  })
   declare id: number;
 
   @Column({
@@ -41,18 +37,20 @@ export class Product extends Model {
     type: DataType.INTEGER,
     allowNull: false,
   })
-  category_id: number;
+  categoryId: number;
 
-  @CreatedAt
-  created_at: Date;
-
-  @UpdatedAt
-  updated_at: Date;
-
-  // Associations
   @BelongsTo(() => ProductCategory)
   category: ProductCategory;
 
   @HasMany(() => Plan)
   plans: Plan[];
+
+  @HasMany(() => Policy)
+  policies: Policy[];
+
+  @CreatedAt
+  declare createdAt: Date;
+
+  @UpdatedAt
+  declare updatedAt: Date;
 }

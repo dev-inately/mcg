@@ -14,11 +14,6 @@ import { Product } from './product.model';
   timestamps: true,
 })
 export class ProductCategory extends Model {
-  @Column({
-    type: DataType.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
-  })
   declare id: number;
 
   @Column({
@@ -34,13 +29,12 @@ export class ProductCategory extends Model {
   })
   description: string;
 
-  @CreatedAt
-  created_at: Date;
-
-  @UpdatedAt
-  updated_at: Date;
-
-  // Associations
   @HasMany(() => Product)
   products: Product[];
+
+  @CreatedAt
+  declare createdAt: Date;
+
+  @UpdatedAt
+  declare updatedAt: Date;
 }

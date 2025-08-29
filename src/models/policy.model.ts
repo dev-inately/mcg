@@ -5,66 +5,68 @@ import {
   DataType,
   BelongsTo,
   ForeignKey,
+  Index,
   CreatedAt,
   UpdatedAt,
 } from 'sequelize-typescript';
 import { User } from './user.model';
 import { Plan } from './plan.model';
-import { PendingPolicy } from './pending-policy.model';
+import { Product } from './product.model';
 
 @Table({
   tableName: 'policies',
   timestamps: true,
+  indexes: [
+    {
+      name: 'idx_policies_user_policy_type',
+      fields: ['userId', 'policyTypeId'],
+    },
+  ],
 })
 export class Policy extends Model {
-  @Column({
-    type: DataType.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
-  })
   declare id: number;
-
-  @ForeignKey(() => PendingPolicy)
-  @Column({
-    type: DataType.INTEGER,
-    allowNull: false,
-  })
-  pending_policy_id: number;
 
   @ForeignKey(() => User)
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
   })
-  user_id: number;
+  userId: number;
 
   @ForeignKey(() => Plan)
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
   })
-  plan_id: number;
+  @Index('idx_policies_plan_id')
+  planId: number;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
     unique: true,
   })
-  policy_number: string;
+  policyNumber: string;
 
-  @CreatedAt
-  created_at: Date;
-
-  @UpdatedAt
-  updated_at: Date;
-
-  // Associations
-  @BelongsTo(() => PendingPolicy)
-  pending_policy: PendingPolicy;
+  @ForeignKey(() => Product)
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+  })
+  policyTypeId: number; // aka product id
 
   @BelongsTo(() => User)
   user: User;
 
   @BelongsTo(() => Plan)
   plan: Plan;
+
+  @BelongsTo(() => Product)
+  product: Product;
+
+  @CreatedAt
+  declare createdAt: Date;
+
+  @UpdatedAt
+  declare updatedAt: Date;
 }

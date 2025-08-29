@@ -1,11 +1,10 @@
 import {
   Controller,
-  Post,
   Get,
+  Post,
   Body,
   Param,
   ParseIntPipe,
-  Logger,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -16,25 +15,27 @@ import {
 } from '@nestjs/swagger';
 import { PlansService } from './plans.service';
 import { CreatePlanDto, PlanResponseDto } from '../../dto/plan.dto';
+import {
+  ResponseHelper,
+  ApiResponse as CustomApiResponse,
+} from '../../common/helpers';
 
 @ApiTags('Plans')
-@Controller('plans')
+@Controller('/v1/plans')
 export class PlansController {
-  private readonly logger = new Logger(PlansController.name);
-
   constructor(private readonly plansService: PlansService) {}
 
   @Post()
-  @ApiOperation({ summary: 'Purchase a plan' })
+  @ApiOperation({ summary: 'Buy a new plan' })
   @ApiBody({ type: CreatePlanDto })
   @ApiResponse({
     status: 201,
-    description: 'Plan purchased successfully',
+    description: 'Plan created successfully',
     type: PlanResponseDto,
   })
   @ApiResponse({
     status: 400,
-    description: 'Bad request - insufficient funds or duplicate plan',
+    description: 'Bad request - insufficient wallet balance or duplicate plan',
   })
   @ApiResponse({
     status: 404,
@@ -42,38 +43,9 @@ export class PlansController {
   })
   async createPlan(
     @Body() createPlanDto: CreatePlanDto,
-  ): Promise<PlanResponseDto> {
-    this.logger.log('POST /plans - Creating new plan', {
-      userId: createPlanDto.user_id,
-      productId: createPlanDto.product_id,
-      quantity: createPlanDto.quantity,
-    });
-    
-    const startTime = Date.now();
-    
-    try {
-      const result = await this.plansService.createPlan(createPlanDto);
-      const duration = Date.now() - startTime;
-      
-      this.logger.log('POST /plans - Plan created successfully', {
-        planId: result.id,
-        userId: result.user_id,
-        productId: result.product_id,
-        quantity: result.quantity,
-        totalAmount: result.total_amount,
-        duration: `${duration}ms`,
-      });
-      
-      return result;
-    } catch (error) {
-      const duration = Date.now() - startTime;
-      this.logger.error('POST /plans - Failed to create plan', {
-        createPlanDto,
-        error: error.message,
-        duration: `${duration}ms`,
-      });
-      throw error;
-    }
+  ): Promise<CustomApiResponse<PlanResponseDto>> {
+    const plan = await this.plansService.createPlan(createPlanDto);
+    return ResponseHelper.success(plan, 'Insurance plan created successfully');
   }
 
   @Get(':id')
@@ -82,7 +54,6 @@ export class PlansController {
   @ApiResponse({
     status: 200,
     description: 'Plan details',
-    type: PlanResponseDto,
   })
   @ApiResponse({
     status: 404,
@@ -90,38 +61,12 @@ export class PlansController {
   })
   async findById(
     @Param('id', ParseIntPipe) id: number,
-  ): Promise<PlanResponseDto | null> {
-    this.logger.log(`GET /plans/${id} - Fetching plan by ID`);
-    const startTime = Date.now();
-    
-    try {
-      const result = await this.plansService.findById(id);
-      const duration = Date.now() - startTime;
-      
-      if (result) {
-        this.logger.log(`GET /plans/${id} - Successfully fetched plan`, {
-          planId: id,
-          userName: result.user.name,
-          productName: result.product.name,
-          duration: `${duration}ms`,
-        });
-      } else {
-        this.logger.warn(`GET /plans/${id} - Plan not found`, {
-          planId: id,
-          duration: `${duration}ms`,
-        });
-      }
-      
-      return result;
-    } catch (error) {
-      const duration = Date.now() - startTime;
-      this.logger.error(`GET /plans/${id} - Failed to fetch plan`, {
-        planId: id,
-        error: error.message,
-        duration: `${duration}ms`,
-      });
-      throw error;
-    }
+  ): Promise<CustomApiResponse<PlanResponseDto | null>> {
+    const plan = await this.plansService.findById(id);
+    return ResponseHelper.success(
+      plan,
+      'Insurance plan retrieved successfully',
+    );
   }
 
   @Get('user/:userId')
@@ -130,34 +75,14 @@ export class PlansController {
   @ApiResponse({
     status: 200,
     description: 'List of user plans',
-    type: [PlanResponseDto],
   })
   async findByUserId(
     @Param('userId', ParseIntPipe) userId: number,
-  ): Promise<PlanResponseDto[]> {
-    this.logger.log(`GET /plans/user/${userId} - Fetching plans for user`);
-    const startTime = Date.now();
-    
-    try {
-      const result = await this.plansService.findByUserId(userId);
-      const duration = Date.now() - startTime;
-      
-      this.logger.log(`GET /plans/user/${userId} - Successfully fetched user plans`, {
-        userId,
-        planCount: result.length,
-        totalSpent: result.reduce((sum, plan) => sum + plan.total_amount, 0),
-        duration: `${duration}ms`,
-      });
-      
-      return result;
-    } catch (error) {
-      const duration = Date.now() - startTime;
-      this.logger.error(`GET /plans/user/${userId} - Failed to fetch user plans`, {
-        userId,
-        error: error.message,
-        duration: `${duration}ms`,
-      });
-      throw error;
-    }
+  ): Promise<CustomApiResponse<PlanResponseDto[]>> {
+    const plans = await this.plansService.findByUserId(userId);
+    return ResponseHelper.success(
+      plans,
+      'User insurance plans retrieved successfully',
+    );
   }
 }

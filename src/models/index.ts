@@ -4,3 +4,5 @@ export { Product } from './product.model';
 export { Plan } from './plan.model';
 export { PendingPolicy } from './pending-policy.model';
 export { Policy } from './policy.model';
+export { Wallet } from './wallet.model';
+export { Transaction } from './transaction.model';

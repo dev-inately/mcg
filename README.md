@@ -1,38 +1,28 @@
-# MyCoverGenius Backend Engineer Assessment
+# MyCoverGenius
 
-A mini insuretech API built with NestJS, Sequelize-TypeScript, and PostgreSQL that allows users to browse insurance products, purchase plans, and manage policies.
+A mini insuretech API for insurance products and policies built with NestJS, Sequelize, and PostgreSQL.
 
 ## 🚀 Features
 
-- **Product Management**: Browse insurance products by category (Health & Auto)
-- **Plan Purchasing**: Buy insurance plans with multiple product units
-- **Wallet Management**: Automatic wallet deduction based on plan quantity
-- **Pending Policies**: Create slots (pending policies) based on purchased quantity
-- **Policy Activation**: Activate pending policies to create active policies
-- **Policy Management**: View and filter active policies
-- **Business Rules**: Enforce one policy per user per plan rule
-
-## 🏗️ Architecture
-
-- **Backend Framework**: NestJS with TypeScript
-- **ORM**: Sequelize with TypeScript decorators
-- **Database**: PostgreSQL
-- **Validation**: Class-validator with DTOs
-- **Documentation**: Swagger/OpenAPI
-- **Testing**: Jest for unit and integration tests
-- **Logging**: Pino with structured logging and performance monitoring
+- **Insurance Products Management**: Create and manage insurance products with categories
+- **Plan Management**: Users can create insurance plans with wallet balance validation
+- **Policy Management**: Activate pending policies and manage active policies
+- **User Management**: User registration with wallet system
+- **Comprehensive API**: RESTful endpoints with proper validation and error handling
 
 ## 📋 Prerequisites
 
-- Node.js (v16 or higher)
-- PostgreSQL (v12 or higher)
-- npm or yarn package manager
+Before running this application, make sure you have the following installed:
+
+- **Node.js** (v18 or higher)
+- **PostgreSQL** (v12 or higher)
+- **npm** or **yarn**
 
 ## 🛠️ Installation
 
 1. **Clone the repository**
    ```bash
-   git clone <your-repo-url>
+   git clone <repository-url>
    cd MyCoverGenius
    ```
 
@@ -41,277 +31,268 @@ A mini insuretech API built with NestJS, Sequelize-TypeScript, and PostgreSQL th
    npm install
    ```
 
-3. **Environment Configuration**
-   Create a `.env` file in the root directory:
-   ```env
-   # Database Configuration
-   DB_HOST=localhost
-   DB_PORT=5432
-   DB_USERNAME=postgres
-   DB_PASSWORD=postgres
-   DB_NAME=mycovergenius
-   DB_DIALECT=postgres
+## ⚙️ Configuration
 
-   # Application Configuration
-   PORT=3000
-   NODE_ENV=development
-   
-   # Logging Configuration
-   LOG_LEVEL=info
-   ```
+### Environment Variables
 
-4. **Database Setup**
-   ```bash
-   # Create PostgreSQL database
-   createdb mycovergenius
-   
-   # Or using psql
-   psql -U postgres
-   CREATE DATABASE mycovergenius;
-   ```
+Create a `.env` file in the root directory with the following variables:
 
-5. **Run the Application**
-   ```bash
-   # Development mode
-   npm run start:dev
-   
-   # Production build
-   npm run build
-   npm run start:prod
-   ```
+```env
+# Database Configuration
+DB_DIALECT=postgres
+DB_HOST=localhost
+DB_PORT=5432
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+DB_NAME=mycovergenius
 
-## 🧪 Testing
+# Application Configuration
+PORT=3000
+NODE_ENV=development
+```
 
-Run the test suite:
+### Test Environment
+
+For running tests, create a `.env.test` file:
+
+```env
+# Test Database Configuration
+DB_DIALECT=postgres
+DB_HOST=localhost
+DB_PORT=5432
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+DB_NAME=mycovergenius-test
+
+# Test Application Configuration
+PORT=3001
+NODE_ENV=test
+```
+
+## 🗄️ Database Setup
+
+### 1. Create PostgreSQL Database
 
 ```bash
-# Unit tests
-npm test
+# Connect to PostgreSQL
+psql -U your_username -h localhost
 
-# Test coverage
+# Create the main database
+CREATE DATABASE mycovergenius;
+
+# Create the test database
+CREATE DATABASE "mycovergenius-test";
+
+# Exit PostgreSQL
+\q
+```
+
+### 2. Run Database Migrations
+
+The application uses Sequelize with `synchronize: true` in development mode, which automatically creates tables based on your models.
+
+## 🌱 Database Seeding
+
+### Development Seeding
+
+To seed the development database with initial data:
+
+```bash
+# Run the seed command
+npm run seed
+```
+
+This will create:
+- Product categories (Health Insurance, Auto Insurance)
+- Sample products with pricing
+- Sample users with wallet balances
+- Initial plans and pending policies
+
+### Test Seeding
+
+Test data is automatically seeded when running e2e tests. The test seed creates:
+- Test product categories and products
+- Test users with predefined wallet balances
+- Test plans and pending policies for testing
+
+## 🚀 Running the Application
+
+### Development Mode
+
+```bash
+# Start the application in development mode
+npm run start:dev
+```
+
+The API will be available at `http://localhost:3000`
+
+### Production Mode
+
+```bash
+# Build the application
+npm run build
+
+# Start in production mode
+npm run start:prod
+```
+
+### Debug Mode
+
+```bash
+# Start with debugging enabled
+npm run start:debug
+```
+
+## 🧪 Running Tests
+
+### Unit Tests
+
+```bash
+# Run all unit tests
+npm run test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage
+npm run test:cov
+```
+
+### E2E Tests
+
+```bash
+# Run all e2e tests
+npm run test:e2e
+
+# Run e2e tests in watch mode
+npm run test:e2e:watch
+```
+
+### Test Coverage
+
+```bash
+# Generate test coverage report
 npm run test:cov
 
-# E2E tests
-npm run test:e2e
-```
-
-## 📝 Logging
-
-The application uses Pino for high-performance structured logging:
-
-### **Log Levels**
-- **ERROR**: Failed operations, exceptions, business rule violations
-- **WARN**: Business rule warnings, validation failures  
-- **INFO**: Successful operations, important business events
-- **DEBUG**: Detailed operation information, data mapping
-
-### **Logging Features**
-- **Performance Monitoring**: API response times, database operation durations
-- **Business Logic Tracking**: All insurance operations with detailed context
-- **Error Handling**: Comprehensive error logging with stack traces
-- **Request/Response Logging**: HTTP method, URL, status codes, duration
-- **Database Operations**: Connection, queries, transactions, seeding
-
-### **Configuration**
-```bash
-# Set log level (default: info)
-LOG_LEVEL=debug
-
-# Environment-based formatting
-NODE_ENV=development  # Pretty-printed, colored logs
-NODE_ENV=production   # JSON structured logs
-```
-
-### **Sample Log Output**
-```
-[INFO] GET /products - Fetching all products
-[INFO] Successfully fetched 4 products
-[DEBUG] Products data mapped successfully {"productCount":4,"categories":["Health","Auto"]}
-[INFO] GET /products - Successfully fetched all products {"productCount":4,"duration":"45ms"}
+# Generate e2e test coverage
+npm run test:e2e:cov
 ```
 
 ## 📚 API Documentation
 
-Once the application is running, visit:
-- **Swagger UI**: http://localhost:3000/api
-- **API Base URL**: http://localhost:3000
+Once the application is running, you can access the Swagger API documentation at:
 
-## 🔌 API Endpoints
-
-### Products
-- `GET /products` - Get all products with categories and prices
-- `GET /products/categories` - Get all product categories with products
-- `GET /products/category/:id` - Get products by category ID
-- `GET /products/:id` - Get product by ID
-
-### Plans
-- `POST /plans` - Purchase a new plan
-- `GET /plans/:id` - Get plan by ID
-- `GET /plans/user/:userId` - Get all plans for a user
-
-### Pending Policies
-- `GET /plans/:id/pending-policies` - Get pending policies under a plan
-- `GET /plans/:id/pending-policies/unused` - Get unused pending policies under a plan
-
-### Policies
-- `POST /policies/activate` - Activate a pending policy
-- `GET /policies` - Get all activated policies
-- `GET /policies?plan_id=X` - Filter policies by plan ID
-- `GET /policies/:id` - Get policy by ID
-
-## 📊 Database Schema
-
-### Core Entities
-- **Users**: User information and wallet balance
-- **ProductCategories**: Insurance product categories (Health, Auto)
-- **Products**: Insurance products with pricing
-- **Plans**: User purchases of products
-- **PendingPolicies**: Available policy slots (soft deleted when used)
-- **Policies**: Active insurance policies
-
-### Relationships
-- Users have many Plans and Policies
-- ProductCategories have many Products
-- Products have many Plans
-- Plans have many PendingPolicies
-- PendingPolicies create one Policy
-- Policies belong to Users and Plans
-
-## 💰 Product Pricing
-
-### Health Products
-- **Optimal Care Mini**: ₦10,000 per unit
-- **Optimal Care Standard**: ₦20,000 per unit
-
-### Auto Products
-- **Third-Party**: ₦5,000 per unit
-- **Comprehensive**: ₦15,000 per unit
-
-## 🔒 Business Rules
-
-1. **Wallet Validation**: Users must have sufficient balance to purchase plans
-2. **One Policy Per Plan**: Users can only have one active policy per plan
-3. **Pending Policy Creation**: Number of pending policies equals plan quantity
-4. **Soft Delete**: Pending policies are soft deleted when activated
-5. **Unique Policy Numbers**: Each policy gets a unique identifier (MCG-YYYYMMDD-XXXX)
-
-## 🚀 Getting Started
-
-### 1. Start the Application
-```bash
-npm run start:dev
+```
+http://localhost:3000/docs
 ```
 
-### 2. Test the API
-```bash
-# Get all products
-curl http://localhost:3000/products
+## 🏗️ Project Structure
 
-# Get product categories
-curl http://localhost:3000/products/categories
-
-# Purchase a plan (example)
-curl -X POST http://localhost:3000/plans \
-  -H "Content-Type: application/json" \
-  -d '{
-    "user_id": 1,
-    "product_id": 1,
-    "quantity": 2
-  }'
+```
+MyCoverGenius/
+├── src/
+│   ├── modules/           # Feature modules
+│   │   ├── products/      # Product management
+│   │   ├── plans/         # Plan management
+│   │   ├── policies/      # Policy management
+│   │   ├── pending-policies/ # Pending policy management
+│   │   └── users/         # User management
+│   ├── models/            # Sequelize models
+│   ├── common/            # Shared utilities and interceptors
+│   ├── config/            # Configuration files
+│   └── main.ts            # Application entry point
+├── test/                  # E2E test files
+├── .env                   # Environment variables
+├── .env.test             # Test environment variables
+└── package.json           # Dependencies and scripts
 ```
 
-### 3. View Swagger Documentation
-Open http://localhost:3000/api in your browser to explore the interactive API documentation.
+## 🔧 Available Scripts
 
-## 🧪 Sample Data
+- `npm run start:dev` - Start development server
+- `npm run start:debug` - Start with debugging
+- `npm run start:prod` - Start production server
+- `npm run build` - Build the application
+- `npm run test` - Run unit tests
+- `npm run test:watch` - Run tests in watch mode
+- `npm run test:cov` - Run tests with coverage
+- `npm run test:e2e` - Run e2e tests
+- `npm run test:e2e:watch` - Run e2e tests in watch mode
+- `npm run seed` - Seed the database
+- `npm run lint` - Run ESLint
+- `npm run lint:fix` - Fix ESLint issues
 
-The application comes with pre-seeded data:
-- **Users**: John Doe (₦100,000), Jane Smith (₦75,000), Bob Johnson (₦50,000)
-- **Categories**: Health, Auto
-- **Products**: All 4 insurance products with correct pricing
+## 🧪 Testing Strategy
 
-## 🔍 Testing Scenarios
+### Unit Tests
+- Test individual service methods
+- Mock external dependencies
+- Fast execution for development feedback
 
-### 1. Product Browsing
-- Fetch all products and verify categories and pricing
-- Filter products by category
-- Get individual product details
-
-### 2. Plan Purchase
-- Purchase a plan with valid user and product
-- Verify wallet deduction
-- Check pending policy creation
-
-### 3. Policy Activation
-- List pending policies under a plan
-- Activate a pending policy
-- Verify policy creation and pending policy soft deletion
-
-### 4. Policy Management
-- View all active policies
-- Filter policies by plan
-- Verify one policy per user per plan rule
+### E2E Tests
+- Test complete API endpoints
+- Use PostgreSQL test database
+- Validate business logic and data flow
+- Test error scenarios and edge cases
 
 ## 🐛 Troubleshooting
 
 ### Common Issues
 
-1. **Database Connection Error**
+1. **Database Connection Failed**
    - Verify PostgreSQL is running
    - Check database credentials in `.env`
    - Ensure database exists
 
 2. **Port Already in Use**
-   - Change PORT in `.env` file
-   - Kill existing process on port 3000
+   - Change the port in `.env`
+   - Kill existing processes using the port
 
-3. **Validation Errors**
-   - Check request body format
-   - Verify required fields are provided
-   - Ensure data types match DTOs
+3. **Test Database Issues**
+   - Ensure `mycovergenius-test` database exists
+   - Check test environment variables
+   - Run tests with `--detectOpenHandles` flag if needed
 
-### Logs
-Check application logs for detailed error information:
-```bash
-npm run start:dev
-```
+### Debug Mode
 
-## 📝 Development
+Enable debug logging by setting `NODE_ENV=development` and check the console for detailed logs.
 
-### Project Structure
-```
-src/
-├── config/           # Configuration files
-├── database/         # Database setup and seeding
-├── models/           # Sequelize models
-├── modules/          # Feature modules
-│   ├── products/     # Product management
-│   ├── plans/        # Plan management
-│   ├── pending-policies/ # Pending policy management
-│   └── policies/     # Policy management
-├── dto/              # Data Transfer Objects
-└── interfaces/       # TypeScript interfaces
-```
+## 📝 API Endpoints
 
-### Adding New Features
-1. Create models in `src/models/`
-2. Add DTOs in `src/dto/`
-3. Implement services in `src/modules/`
-4. Create controllers in `src/modules/`
-5. Update modules and app.module.ts
-6. Add tests
-7. Update documentation
+### Products
+- `GET /api/v1/products` - Get all products
+- `GET /api/v1/products/:id` - Get product by ID
+- `GET /api/v1/products/categories` - Get all product categories
+
+### Plans
+- `POST /api/v1/plans` - Create a new plan
+- `GET /api/v1/plans/:id` - Get plan by ID
+- `GET /api/v1/plans/user/:userId` - Get plans for a user
+
+### Policies
+- `GET /api/v1/policies` - Get policies with planId filter
+- `POST /api/v1/policies/activate` - Activate a pending policy
+
+### Pending Policies
+- `GET /api/v1/plans/:id/pending-policies` - Get pending policies for a plan
+- `GET /api/v1/plans/:id/pending-policies/unused` - Get unused pending policies
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests for new functionality
+5. Ensure all tests pass
+6. Submit a pull request
 
 ## 📄 License
 
-This project is part of the MyCoverGenius Backend Engineer Assessment.
+This project is licensed under the MIT License.
 
-## 🤝 Contact
+## 🆘 Support
 
-For questions or support:
-- **Phone**: 08160161074
-- **Email**: [To be provided]
-
----
-
-**Note**: This API is designed for demonstration purposes and includes comprehensive business logic validation, proper error handling, and extensive testing coverage.
+For support and questions:
+- Check the API documentation at `/docs`
+- Review the test files for usage examples
+- Check the console logs for debugging information

@@ -4,42 +4,41 @@ import {
   Model,
   DataType,
   HasMany,
-  CreatedAt,
+  HasOne,
+  BelongsTo,
   UpdatedAt,
+  CreatedAt,
 } from 'sequelize-typescript';
 import { Plan } from './plan.model';
 import { Policy } from './policy.model';
+import { Wallet } from './wallet.model';
+import { Transaction } from './transaction.model';
 
 @Table({
   tableName: 'users',
   timestamps: true,
 })
 export class User extends Model {
-  @Column({
-    type: DataType.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
-  })
   declare id: number;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  name: string;
+  fullName: string;
 
   @Column({
-    type: DataType.DECIMAL(10, 2),
+    type: DataType.STRING,
     allowNull: false,
-    defaultValue: 0,
+    unique: true,
   })
-  wallet_balance: number;
+  email: string;
 
-  @CreatedAt
-  created_at: Date;
-
-  @UpdatedAt
-  updated_at: Date;
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  phoneNumber: string;
 
   // Associations
   @HasMany(() => Plan)
@@ -47,4 +46,16 @@ export class User extends Model {
 
   @HasMany(() => Policy)
   policies: Policy[];
+
+  @HasMany(() => Transaction)
+  transactions: Transaction[];
+
+  @HasOne(() => Wallet)
+  wallet: Wallet;
+
+  @CreatedAt
+  declare createdAt: Date;
+
+  @UpdatedAt
+  declare updatedAt: Date;
 }

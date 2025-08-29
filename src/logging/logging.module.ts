@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { LoggerModule } from 'nestjs-pino';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import PinoPretty from 'pino-pretty';
 
 @Module({
   imports: [
@@ -10,11 +11,16 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       useFactory: (configService: ConfigService) => ({
         pinoHttp: {
           level: configService.get('logging.level'),
-          prettyPrint: configService.get('logging.prettyPrint') ? {
-            colorize: true,
-            levelFirst: true,
-            translateTime: 'yyyy-mm-dd HH:MM:ss',
-          } : false,
+          transport: configService.get('logging.prettyPrint')
+            ? {
+                target: 'pino-pretty',
+                options: {
+                  colorize: true,
+                  levelFirst: true,
+                  translateTime: 'yyyy-mm-dd HH:MM:ss',
+                },
+              }
+            : undefined,
           redact: configService.get('logging.redact'),
           timestamp: configService.get('logging.timestamp'),
           formatters: configService.get('logging.formatters'),
@@ -24,4 +30,4 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     }),
   ],
 })
-export class AppLoggingModule {}
+export class LoggingModule {}

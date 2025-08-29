@@ -2,17 +2,14 @@ import { IsString, IsNumber, IsOptional, IsEnum } from 'class-validator';
 
 export class PendingPolicyResponseDto {
   id: number;
-  plan_id: number;
   status: 'unused' | 'used';
   plan: {
     id: number;
-    user_id: number;
-    product_id: number;
     quantity: number;
-    total_amount: number;
+    totalAmount: number;
     user: {
       id: number;
-      name: string;
+      fullName: string;
     };
     product: {
       id: number;
@@ -20,11 +17,15 @@ export class PendingPolicyResponseDto {
       price: number;
     };
   };
-  created_at: Date;
-  updated_at: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export class ActivatePendingPolicyDto {
   @IsNumber()
-  pending_policy_id: number;
+  pendingPolicyId: number;
+
+  @IsNumber()
+  @IsOptional()
+  userId?: number;
 }

@@ -2,32 +2,28 @@ import { IsString, IsNumber, IsOptional } from 'class-validator';
 
 export class PolicyResponseDto {
   id: number;
-  pending_policy_id: number;
-  user_id: number;
-  plan_id: number;
-  policy_number: string;
-  user: {
+  userId: number;
+  planId: number;
+  policyNumber: string;
+  product: {
     id: number;
     name: string;
-  };
-  plan: {
-    id: number;
-    product: {
-      id: number;
+    price: number;
+    category: {
       name: string;
-      price: number;
-      category: {
-        id: number;
-        name: string;
-      };
     };
   };
-  created_at: Date;
-  updated_at: Date;
+  user?: {
+    id: number;
+    fullName: string;
+    email: string;
+  };
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export class PolicyFilterDto {
   @IsOptional()
   @IsNumber()
-  plan_id?: number;
+  planId?: number;
 }
